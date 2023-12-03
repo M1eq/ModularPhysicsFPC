@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80aa6ed6bb85dc24091f2ab092a84a64, type: 3}
   m_Name: MovementParameters
   m_EditorClassIdentifier: 
-  _moveSpeed: 10
-  _jumpForce: 0.5
+  _walkSpeed: 5
+  _runSpeed: 7.5
+  _crouchSpeed: 4
+  _jumpForce: 0.3
+  _crouchScaleY: 0.75
+  _canJump: 1
+  _canRun: 1
+  _canCrouching: 1

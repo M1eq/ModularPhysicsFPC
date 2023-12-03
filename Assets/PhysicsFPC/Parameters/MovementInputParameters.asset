@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 885d98654a3b23c4f8579f46e00995d7, type: 3}
   m_Name: MovementInputParameters
   m_EditorClassIdentifier: 
-  _jumpButton: 32
+  _jumpButtonKey: 32
+  _runButtonKey: 304
+  _crouchingButtonKey: 306
