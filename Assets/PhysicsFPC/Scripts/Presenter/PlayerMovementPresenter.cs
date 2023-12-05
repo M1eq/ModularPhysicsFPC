@@ -10,18 +10,30 @@ public class PlayerMovementPresenter : MonoBehaviour
     {
         _mouseLook.UpdateLook();
 
+        TryInputRun();
+        TryInputCrouching();
+        _playerMovement.Move();
+        TryInputJump();
+    }
+
+    private void TryInputRun()
+    {
         if (Input.GetKey(_inputParameters.RunButtonKey) && _playerMovement.Crouching == false)
             _playerMovement.TryRun();
         else
             _playerMovement.NormalizeMoveSpeed();
+    }
 
+    private void TryInputCrouching()
+    {
         if (Input.GetKey(_inputParameters.CrouchingButtonKey) && _playerMovement.Running == false)
             _playerMovement.TryCrouching();
         else
             _playerMovement.NormalizePlayerHeight();
+    }
 
-        _playerMovement.Move();
-
+    private void TryInputJump()
+    {
         if (Input.GetKey(_inputParameters.JumpButtonKey) && _playerMovement.Crouching == false)
             _playerMovement.TryJump();
     }
