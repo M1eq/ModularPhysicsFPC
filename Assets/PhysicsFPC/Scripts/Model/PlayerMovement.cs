@@ -20,8 +20,6 @@ public class PlayerMovement : MonoBehaviour
     private const string VerticalAxis = "Vertical";
     private const string HorizontalAxis = "Horizontal";
 
-    private Vector3 moveVectorForPlayer;
-
     private bool Grounded => _groundChecker.GetGroundCheckResult() == true;
     private bool Sloped => _groundChecker.GetSlopeGroundCheckResult() == true;
     private bool CanRun => Grounded && _movementParameters.CanRun || Sloped && _movementParameters.CanRun;
@@ -40,22 +38,11 @@ public class PlayerMovement : MonoBehaviour
     public void Move()
     {
         InitializeAxis();
-        TrySlope();
 
-        //Vector3 moveVelocity = _playerOrientation.TransformDirection(_moveDirection) * _moveSpeed;
-
-        //if (moveVelocity.magnitude > _moveSpeed)
-        //    moveVelocity = moveVelocity.normalized * _moveSpeed;
-
-        //_playerRigidbody.velocity = new Vector3(moveVelocity.x, _playerRigidbody.velocity.y, moveVelocity.z);
-
-        var normal = _groundChecker.GetSlopeGroundNormal();
-        //_moveDirection = _moveDirection.normalized;
-        moveVectorForPlayer = _moveDirection - Vector3.Dot(_moveDirection, normal) * normal;
-
-        moveVectorForPlayer = moveVectorForPlayer * _moveSpeed;
-        var s = moveVectorForPlayer;
-        _playerRigidbody.velocity = s;
+        if (Sloped)
+            ApplySlopeMove();
+        else
+            ApplyDefaultMove();
     }
 
     public void TryRun()
@@ -77,24 +64,36 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = new Vector3(transform.localScale.x, _movementParameters.CrouchScaleY, transform.localScale.z);
 
             if (Crouching == false)
-                _playerRigidbody.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+                _playerRigidbody.AddForce(Vector3.down * _movementParameters.CrouchDownForce, ForceMode.Impulse);
 
             _moveSpeed = _movementParameters.CrouchSpeed;
             _crouching = true;
         }
     }
-
-    private void TrySlope()
+    
+    private void ApplySlopeMove()
     {
-        if (Sloped)
-        {
-            _playerRigidbody.useGravity = false;
-            _moveDirection = Vector3.ProjectOnPlane(_moveDirection, _groundChecker.GetSlopeGroundNormal()).normalized;
-        }
-        else
-        {
-            _playerRigidbody.useGravity = true;
-        }
+        _playerRigidbody.useGravity = false;
+        var slopeGroundNormal = _groundChecker.GetSlopeGroundNormal();
+
+        _moveDirection = Vector3.ProjectOnPlane(
+            _playerOrientation.TransformDirection(_moveDirection), slopeGroundNormal).normalized;
+
+       Vector3 slopeMoveVelocity = _moveDirection - Vector3.Dot(_moveDirection, slopeGroundNormal) * slopeGroundNormal;
+        slopeMoveVelocity *= _moveSpeed;
+
+        _playerRigidbody.velocity = slopeMoveVelocity;
+    }
+
+    private void ApplyDefaultMove()
+    {
+        _playerRigidbody.useGravity = true;
+        Vector3 moveVelocity = _playerOrientation.TransformDirection(_moveDirection) * _moveSpeed;
+
+        if (moveVelocity.magnitude > _moveSpeed)
+            moveVelocity = moveVelocity.normalized * _moveSpeed;
+
+        _playerRigidbody.velocity = new Vector3(moveVelocity.x, _playerRigidbody.velocity.y, moveVelocity.z);
     }
 
     private void InitializeAxis()

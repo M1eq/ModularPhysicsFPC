@@ -3,7 +3,7 @@ using UnityEngine;
 public class GroundChecker : MonoBehaviour
 {
     [SerializeField] private LayerMask _groundMask;
-    [Space(10), SerializeField] private float _slopeRayLenght;
+    [SerializeField] private float _slopeRayLenght;
     [SerializeField] private float _sphereRadius;
 
     private RaycastHit _slopeHit;

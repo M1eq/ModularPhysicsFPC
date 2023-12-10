@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class MouseLook : MonoBehaviour
 {
-    [SerializeField] private MouseLookParameters _mouseLookParameters;
-    [Space(10), SerializeField] private Camera _playerCamera;
+    [SerializeField] private PlayerMovementParameters _mouseLookParameters;
+    [SerializeField] private Camera _playerCamera;
     [SerializeField] private Transform _cameraHandler;
     [SerializeField] private PlayerMovement _playerMovement;
 

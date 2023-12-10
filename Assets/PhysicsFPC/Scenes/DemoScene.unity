@@ -204,7 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b0293e00301904f87c2973438dd31b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inputParameters: {fileID: 11400000, guid: b43865a0176af2443ab724633eab0712, type: 2}
+  _inputParameters: {fileID: 11400000, guid: 8cf416b851c980242979734458f12be9, type: 2}
   _playerMovement: {fileID: 236032714}
   _mouseLook: {fileID: 963194229}
 --- !u!1 &452376575
@@ -544,7 +544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 826e92bc64da81542a65185ce9759969, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mouseLookParameters: {fileID: 11400000, guid: aaa8207c96676394abf16e3107531764, type: 2}
+  _mouseLookParameters: {fileID: 11400000, guid: 8cf416b851c980242979734458f12be9, type: 2}
   _playerCamera: {fileID: 963194227}
   _cameraHandler: {fileID: 1593997542}
   _playerMovement: {fileID: 236032714}

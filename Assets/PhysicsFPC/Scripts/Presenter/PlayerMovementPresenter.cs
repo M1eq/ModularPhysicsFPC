@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerMovementPresenter : MonoBehaviour
 {
-    [SerializeField] private MovementInputParameters _inputParameters;
+    [SerializeField] private PlayerMovementParameters _inputParameters;
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private MouseLook _mouseLook;
 
