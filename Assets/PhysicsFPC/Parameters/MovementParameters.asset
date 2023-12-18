@@ -12,15 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80aa6ed6bb85dc24091f2ab092a84a64, type: 3}
   m_Name: MovementParameters
   m_EditorClassIdentifier: 
-  _walkSpeed: 5
+  _walkSpeed: 7
   _runSpeed: 7.5
   _crouchSpeed: 3.5
-  _jumpForce: 0.3
+  _jumpForce: 12
   _crouchScaleY: 0.75
+  _crouchDownForce: 70
+  _gravityForce: 30
+  _stepHeightRatio: 0.25
+  _walkableLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  _colliderHeight: 2
+  _colliderThickness: 1
+  _colliderOffset: {x: 0, y: 0.25, z: 0}
   _verticalSensivity: 400
   _horizontalSensivity: 400
   _upperVerticalRotationBorder: 90
   _lowerVerticalRotationBorder: -90
+  _fieldOfView: 90
   _jumpButtonKey: 32
   _runButtonKey: 304
   _crouchingButtonKey: 306

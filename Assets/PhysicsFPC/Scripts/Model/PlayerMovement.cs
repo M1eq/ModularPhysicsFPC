@@ -1,112 +1,87 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
-    public bool Running => _moveSpeed == _movementParameters.RunSpeed;
-    public bool Crouching => _crouching;
-
-    [SerializeField] private GroundChecker _groundChecker;
-    [SerializeField] private Transform _playerOrientation;
     [SerializeField] private PlayerMovementParameters _movementParameters;
+    [SerializeField] private GroundChecker _groundChecker;
+    [SerializeField] private Rigidbody _playerRigidbody;
+    [SerializeField] private Transform cameraTransform;
 
-    private bool _crouching;
-    private float _moveSpeed;
-    private float _startScaleY;
-    private float _verticalAxis;
-    private float _horizontalAxis;
-    private Vector3 _moveDirection;
-    private Rigidbody _playerRigidbody;
-    private const string VerticalAxis = "Vertical";
-    private const string HorizontalAxis = "Horizontal";
-
-    private bool Grounded => _groundChecker.GetGroundCheckResult() == true;
-    private bool Sloped => _groundChecker.GetSlopeGroundCheckResult() == true;
-    private bool CanRun => Grounded && _movementParameters.CanRun || Sloped && _movementParameters.CanRun;
-    private bool CanJump => Grounded && _movementParameters.CanJump || Sloped && _movementParameters.CanJump;
-    private bool CanCrouch => Grounded && _movementParameters.CanCrouching || Sloped && _movementParameters.CanCrouching;
-
-    public void RotateAt(Quaternion angle) => _playerOrientation.rotation = angle;
-    public void NormalizeMoveSpeed() => _moveSpeed = _movementParameters.WalkSpeed;
-
-    public void NormalizePlayerHeight()
-    {
-        transform.localScale = new Vector3(transform.localScale.x, _startScaleY, transform.localScale.z);
-        _crouching = false;
-    }
-
-    public void Move()
-    {
-        InitializeAxis();
-
-        if (Sloped)
-            ApplySlopeMove();
-        else
-            ApplyDefaultMove();
-    }
-
-    public void TryRun()
-    {
-        if (CanRun)
-            _moveSpeed = _movementParameters.RunSpeed;
-    }
+    private Vector3 _groundAdjustmentVelocity = Vector3.zero;
+    private bool _extendedRaycastActivated = true;
+    private float currentVerticalSpeed = 0f;
+    private bool _grounded;
 
     public void TryJump()
     {
-        if (CanJump)
-            _playerRigidbody.AddForce(Vector3.up * _movementParameters.JumpForce, ForceMode.Impulse);
-    }
-
-    public void TryCrouching()
-    {
-        if (CanCrouch)
+        if (_grounded)
         {
-            transform.localScale = new Vector3(transform.localScale.x, _movementParameters.CrouchScaleY, transform.localScale.z);
-
-            if (Crouching == false)
-                _playerRigidbody.AddForce(Vector3.down * _movementParameters.CrouchDownForce, ForceMode.Impulse);
-
-            _moveSpeed = _movementParameters.CrouchSpeed;
-            _crouching = true;
+            currentVerticalSpeed = _movementParameters.JumpForce;
+            _grounded = false;
         }
     }
-    
-    private void ApplySlopeMove()
+
+    public void ApplyMoveVelocity(float horizontalAxis, float verticalAxis)
     {
-        _playerRigidbody.useGravity = false;
-        var slopeGroundNormal = _groundChecker.GetSlopeGroundNormal();
+        _extendedRaycastActivated = _grounded;
 
-        _moveDirection = Vector3.ProjectOnPlane(
-            _playerOrientation.TransformDirection(_moveDirection), slopeGroundNormal).normalized;
+        Vector3 velocity = Vector3.zero;
+        velocity += GetCalculatedMovementDirection(horizontalAxis, verticalAxis) * _movementParameters.WalkSpeed;
+        velocity += transform.up * currentVerticalSpeed;
 
-       Vector3 slopeMoveVelocity = _moveDirection - Vector3.Dot(_moveDirection, slopeGroundNormal) * slopeGroundNormal;
-        slopeMoveVelocity *= _moveSpeed;
-
-        _playerRigidbody.velocity = slopeMoveVelocity;
+        _playerRigidbody.velocity = velocity + _groundAdjustmentVelocity;
     }
 
-    private void ApplyDefaultMove()
+    public void TryDeacreaseVerticalSpeed()
     {
-        _playerRigidbody.useGravity = true;
-        Vector3 moveVelocity = _playerOrientation.TransformDirection(_moveDirection) * _moveSpeed;
-
-        if (moveVelocity.magnitude > _moveSpeed)
-            moveVelocity = moveVelocity.normalized * _moveSpeed;
-
-        _playerRigidbody.velocity = new Vector3(moveVelocity.x, _playerRigidbody.velocity.y, moveVelocity.z);
+        if (!_grounded)
+        {
+            currentVerticalSpeed -= _movementParameters.GravityForce * Time.deltaTime;
+        }
+        else
+        {
+            if (currentVerticalSpeed <= 0f)
+                currentVerticalSpeed = 0f;
+        }
     }
 
-    private void InitializeAxis()
+    public void CalculateAdjustmentVelocity()
     {
-        _horizontalAxis = Input.GetAxis(HorizontalAxis);
-        _verticalAxis = Input.GetAxis(VerticalAxis);
-        _moveDirection = new Vector3(_horizontalAxis, 0f, _verticalAxis);
+        _groundAdjustmentVelocity = Vector3.zero;
+
+        ReleaseInitializedRaycast();
+        _grounded = _groundChecker.GetHitDetectionResult();
+
+        if (_grounded)
+        {
+            float upperLimit = (_movementParameters.ColliderHeight * (1f - _movementParameters.StepHeightRatio)) * 0.5f;
+            float middle = upperLimit + _movementParameters.ColliderHeight * _movementParameters.StepHeightRatio;
+            float adjustmentMoveDistance = middle - _groundChecker.GetHitDistance();
+
+            _groundAdjustmentVelocity = transform.up * (adjustmentMoveDistance / Time.fixedDeltaTime);
+        }
     }
 
-    private void Start()
+    private void ReleaseInitializedRaycast()
     {
-        _playerRigidbody = GetComponent<Rigidbody>();
-        _playerRigidbody.freezeRotation = true;
-        _startScaleY = transform.localScale.y;
+        if (_extendedRaycastActivated)
+            _groundChecker.ApplyExtendedRaycastLenght();
+        else
+            _groundChecker.ApplyBaseRaycastLenght();
+
+        _groundChecker.ReleaseRaycast();
+    }
+
+    private Vector3 GetCalculatedMovementDirection(float horizontalAxis, float verticalAxis)
+    {
+        Vector3 _direction = Vector3.zero;
+
+        _direction += Vector3.ProjectOnPlane(cameraTransform.right, transform.up).normalized * horizontalAxis;
+        _direction += Vector3.ProjectOnPlane(cameraTransform.forward, transform.up).normalized * verticalAxis;
+
+        if (_direction.magnitude > 1f)
+            _direction.Normalize();
+
+        return _direction;
     }
 }

@@ -2,10 +2,9 @@ using UnityEngine;
 
 public class MouseLook : MonoBehaviour
 {
-    [SerializeField] private PlayerMovementParameters _mouseLookParameters;
-    [SerializeField] private Camera _playerCamera;
+    [SerializeField] private PlayerMovementParameters _movementParameters;
     [SerializeField] private Transform _cameraHandler;
-    [SerializeField] private PlayerMovement _playerMovement;
+    [SerializeField] private Camera _playerCamera;
 
     private float _verticalAxis;
     private float _horizontalAxis;
@@ -20,31 +19,28 @@ public class MouseLook : MonoBehaviour
 
         InitializeAxis();
         CalculateRotation();
-        RotateLook();
+
+        transform.rotation = Quaternion.Euler(_verticalRotation, _horizontalRotation, 0);
     }
 
     private void InitializeAxis()
     {
-        _horizontalAxis = Input.GetAxis(MouseAxisX) * _mouseLookParameters.HorizontalSenivity * Time.deltaTime;
-        _verticalAxis = Input.GetAxis(MouseAxisY) * _mouseLookParameters.VerticalSensivity * Time.deltaTime;
+        _horizontalAxis = Input.GetAxis(MouseAxisX) * _movementParameters.HorizontalSenivity * Time.deltaTime;
+        _verticalAxis = Input.GetAxis(MouseAxisY) * _movementParameters.VerticalSensivity * Time.deltaTime;
     }
 
     private void CalculateRotation()
     {
         _horizontalRotation += _horizontalAxis;
         _verticalRotation -= _verticalAxis;
-        _verticalRotation = Mathf.Clamp(
-            _verticalRotation, _mouseLookParameters.LowerVerticalRotationBorder, _mouseLookParameters.UpperVerticalRotationBorder);
-    }
 
-    private void RotateLook()
-    {
-        transform.rotation = Quaternion.Euler(_verticalRotation, _horizontalRotation, 0);
-        _playerMovement.RotateAt(Quaternion.Euler(0, _horizontalRotation, 0));
+        _verticalRotation = Mathf.Clamp(
+            _verticalRotation, _movementParameters.LowerVerticalRotationBorder, _movementParameters.UpperVerticalRotationBorder);
     }
 
     private void Start()
     {
+        _playerCamera.fieldOfView = _movementParameters.FieldOfView;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }

@@ -2,34 +2,49 @@ using UnityEngine;
 
 public class GroundChecker : MonoBehaviour
 {
-    [SerializeField] private LayerMask _groundMask;
-    [SerializeField] private float _slopeRayLenght;
-    [SerializeField] private float _sphereRadius;
+    [SerializeField] private PlayerMovementParameters _movementParameters;
 
-    private RaycastHit _slopeHit;
+    private float _baseRaycastLenght;
+    private float _extendedRaycastLenght;
+    private float _raycastLength;
+    private float _hitDistance;
+    private bool _hitDetected;
+    private RaycastHit _hit;
+    private Transform _playerTransfrom;
+    private Vector3 _originPoint = Vector3.zero;
+    private const float SafetyDistanceFactor = 1.001f;
 
-    public Vector3 GetSlopeGroundNormal() => _slopeHit.normal;
-    public bool GetGroundCheckResult() => Physics.CheckSphere(transform.position, _sphereRadius, _groundMask);
+    public void ApplyExtendedRaycastLenght() => _raycastLength = _extendedRaycastLenght;
+    public void ApplyBaseRaycastLenght() => _raycastLength = _baseRaycastLenght;
+    public bool GetHitDetectionResult() => _hitDetected;
+    public float GetHitDistance() => _hitDistance;
 
-    public bool GetSlopeGroundCheckResult()
+    public void Initialize(Transform playerTransform, Vector3 origin, float raycastLenght)
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out _slopeHit, _slopeRayLenght))
-        {
-            if (_slopeHit.normal != Vector3.up)
-                return true;
-            else
-                return false;
-        }
+        _playerTransfrom = playerTransform;
+        _originPoint = _playerTransfrom.InverseTransformPoint(origin);
 
-        return false;
+        _baseRaycastLenght = raycastLenght * SafetyDistanceFactor;
+        _extendedRaycastLenght = _baseRaycastLenght + _movementParameters.ColliderHeight * _movementParameters.StepHeightRatio;
+        _raycastLength = _baseRaycastLenght;
     }
 
-    private void OnDrawGizmos()
+    public void ReleaseRaycast()
     {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(transform.position, _sphereRadius);
+        _hitDetected = false;
+        _hitDistance = 0f;
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, new Vector3(0, -_slopeRayLenght, 0));
+        Vector3 worldDirection = -_playerTransfrom.up;
+        Vector3 worldOriginPoint = _playerTransfrom.TransformPoint(_originPoint);
+
+        CastRay(worldOriginPoint, worldDirection);
+    }
+
+    private void CastRay(Vector3 originPoint, Vector3 direction)
+    {
+        _hitDetected = Physics.Raycast(originPoint, direction, out _hit, _raycastLength, _movementParameters.WalkableLayer);
+
+        if (_hitDetected)
+            _hitDistance = _hit.distance;
     }
 }
