@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: MovementParameters
   m_EditorClassIdentifier: 
   _walkSpeed: 7
-  _runSpeed: 7.5
+  _runSpeed: 10
   _crouchSpeed: 3.5
   _jumpForce: 12
   _crouchScaleY: 0.75
-  _crouchDownForce: 70
   _gravityForce: 30
   _stepHeightRatio: 0.25
   _walkableLayer:
     serializedVersion: 2
     m_Bits: 8
+  _rawInput: 0
   _colliderHeight: 2
   _colliderThickness: 1
   _colliderOffset: {x: 0, y: 0.25, z: 0}
@@ -30,10 +30,10 @@ MonoBehaviour:
   _horizontalSensivity: 400
   _upperVerticalRotationBorder: 90
   _lowerVerticalRotationBorder: -90
-  _fieldOfView: 90
+  _fieldOfView: 75
   _jumpButtonKey: 32
   _runButtonKey: 304
   _crouchingButtonKey: 306
   _canJump: 1
   _canRun: 1
-  _canCrouching: 1
+  _canCrouch: 1

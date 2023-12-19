@@ -11,6 +11,8 @@ public class PlayerMovementPresenter : MonoBehaviour
 
     private const string HorizontalAxis = "Horizontal";
     private const string VerticalAxis = "Vertical";
+    private float _horizontalAxisDirection;
+    private float _verticalAxisDirection;
 
     private void LateUpdate() => _mouseLook.UpdateLook();
 
@@ -22,16 +24,39 @@ public class PlayerMovementPresenter : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float horizontal = Input.GetAxis(HorizontalAxis);
-        float vertical = Input.GetAxis(VerticalAxis);
+        InitializeAxisDirections();
 
-        _playerMovement.CalculateAdjustmentVelocity();
+        if (Input.GetKey(_movementParameters.CrouchingButtonKey) && _movementParameters.CanCrouch)
+            _playerMovement.TryCrouch();
+        else
+            _playerMovement.TryResetHeight();
+
+        _playerMovement.TryCalculateAdjustmentVelocity();
         _playerMovement.TryDeacreaseVerticalSpeed();
 
-        if (Input.GetKey(_movementParameters.JumpButtonKey))
+        if (Input.GetKey(_movementParameters.RunButtonKey) && _movementParameters.CanRun)
+            _playerMovement.TryApplyRunSpeed();
+        else
+            _playerMovement.TryApplyWalkSpeed();
+
+        if (Input.GetKey(_movementParameters.JumpButtonKey) && _movementParameters.CanJump)
             _playerMovement.TryJump();
 
-        _playerMovement.ApplyMoveVelocity(horizontal, vertical);
+        _playerMovement.ApplyMoveVelocity(_horizontalAxisDirection, _verticalAxisDirection);
+    }
+
+    private void InitializeAxisDirections()
+    {
+        if (_movementParameters.RawInput)
+        {
+            _horizontalAxisDirection = Input.GetAxisRaw(HorizontalAxis);
+            _verticalAxisDirection = Input.GetAxisRaw(VerticalAxis);
+        }
+        else
+        {
+            _horizontalAxisDirection = Input.GetAxis(HorizontalAxis);
+            _verticalAxisDirection = Input.GetAxis(VerticalAxis);
+        }
     }
 
     private void InitializeCollider()

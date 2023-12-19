@@ -10,11 +10,11 @@ public class PlayerMovementParameters : ScriptableObject
     public float WalkSpeed => _walkSpeed;
     public float JumpForce => _jumpForce;
     public float RunSpeed => _runSpeed;
+    public bool RawInput => _rawInput;
     public bool CanJump => _canJump;
     public bool CanRun => _canRun;
-    public bool CanCrouching => _canCrouching;
+    public bool CanCrouch => _canCrouch;
     public float CrouchScaleY => _crouchScaleY;
-    public float CrouchDownForce => _crouchDownForce;
     public KeyCode JumpButtonKey => _jumpButtonKey;
     public KeyCode RunButtonKey => _runButtonKey;
     public KeyCode CrouchingButtonKey => _crouchingButtonKey;
@@ -28,15 +28,15 @@ public class PlayerMovementParameters : ScriptableObject
     public float FieldOfView => _fieldOfView;
 
     [Header("Настройки передвижения")]
-    [Space(5), SerializeField] private float _walkSpeed = 5;
-    [SerializeField] private float _runSpeed = 7.5f;
-    [SerializeField] private float _crouchSpeed = 3.5f;
-    [SerializeField] private float _jumpForce = 5f;
+    [Space(5), SerializeField] private float _walkSpeed = 7;
+    [SerializeField] private float _runSpeed = 10f;
+    [SerializeField] private float _crouchSpeed = 5f;
+    [SerializeField] private float _jumpForce = 12f;
     [SerializeField] private float _crouchScaleY = 0.75f;
-    [SerializeField] private float _crouchDownForce = 5f;
-    [SerializeField] private float _gravityForce = 10f;
+    [SerializeField] private float _gravityForce = 30f;
     [Space(5), SerializeField, Range(0f, 1f)] private float _stepHeightRatio = 0.25f;
     [SerializeField] private LayerMask _walkableLayer = 255;
+    [SerializeField] private bool _rawInput = false;
     [Space(5), Header("Настройки коллайдера")]
     [SerializeField] private float _colliderHeight = 2f;
     [SerializeField] private float _colliderThickness = 1f;
@@ -54,5 +54,5 @@ public class PlayerMovementParameters : ScriptableObject
     [Space(5), Header("Настройки опций")]
     [Space(5), SerializeField] private bool _canJump = true;
     [SerializeField] private bool _canRun = true;
-    [SerializeField] private bool _canCrouching = true;
+    [SerializeField] private bool _canCrouch = true;
 }

@@ -7,14 +7,48 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody _playerRigidbody;
     [SerializeField] private Transform cameraTransform;
 
+    private Vector3 _startScale;
     private Vector3 _groundAdjustmentVelocity = Vector3.zero;
     private bool _extendedRaycastActivated = true;
     private float currentVerticalSpeed = 0f;
+    private float _currentSpeed;
+    private bool _crouching;
     private bool _grounded;
+
+    public void TryApplyWalkSpeed()
+    {
+        if (_crouching == false && _currentSpeed != _movementParameters.WalkSpeed)
+            _currentSpeed = _movementParameters.WalkSpeed;
+    }
+
+    public void TryApplyRunSpeed()
+    {
+        if (_crouching == false && _currentSpeed != _movementParameters.RunSpeed)
+            _currentSpeed = _movementParameters.RunSpeed;
+    }
+
+    public void TryResetHeight()
+    {
+        if (transform.localScale != _startScale)
+        {
+            transform.localScale = _startScale;
+            _crouching = false;
+        }
+    }
+
+    public void TryCrouch()
+    {
+        if (_grounded && transform.localScale.y != _movementParameters.CrouchScaleY)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, _movementParameters.CrouchScaleY, transform.localScale.z);
+            _currentSpeed = _movementParameters.CrouchSpeed;
+            _crouching = true;
+        }
+    }
 
     public void TryJump()
     {
-        if (_grounded)
+        if (_grounded && _crouching == false)
         {
             currentVerticalSpeed = _movementParameters.JumpForce;
             _grounded = false;
@@ -26,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
         _extendedRaycastActivated = _grounded;
 
         Vector3 velocity = Vector3.zero;
-        velocity += GetCalculatedMovementDirection(horizontalAxis, verticalAxis) * _movementParameters.WalkSpeed;
+        velocity += GetCalculatedMovementDirection(horizontalAxis, verticalAxis) * _currentSpeed;
         velocity += transform.up * currentVerticalSpeed;
 
         _playerRigidbody.velocity = velocity + _groundAdjustmentVelocity;
@@ -45,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void CalculateAdjustmentVelocity()
+    public void TryCalculateAdjustmentVelocity()
     {
         _groundAdjustmentVelocity = Vector3.zero;
 
@@ -84,4 +118,6 @@ public class PlayerMovement : MonoBehaviour
 
         return _direction;
     }
+
+    private void Awake() => _startScale = transform.localScale;
 }
