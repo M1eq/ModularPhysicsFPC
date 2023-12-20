@@ -26,6 +26,7 @@ public class PlayerMovementParameters : ScriptableObject
     public float UpperVerticalRotationBorder => _upperVerticalRotationBorder;
     public float LowerVerticalRotationBorder => _lowerVerticalRotationBorder;
     public float FieldOfView => _fieldOfView;
+    public float SmoothSpeed => _smoothSpeed;
 
     [Header("Настройки передвижения")]
     [Space(5), SerializeField] private float _walkSpeed = 7;
@@ -46,6 +47,7 @@ public class PlayerMovementParameters : ScriptableObject
     [SerializeField] private float _horizontalSensivity = 400;
     [SerializeField] private float _upperVerticalRotationBorder = 90;
     [SerializeField] private float _lowerVerticalRotationBorder = -90;
+    [SerializeField] private float _smoothSpeed = 20f;
     [Space(5), SerializeField, Range(1, 179)] private float _fieldOfView = 70;
     [Space(5), Header("Настройки ввода")]
     [Space(5), SerializeField] private KeyCode _jumpButtonKey = KeyCode.Space;

@@ -5,7 +5,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerMovementParameters _movementParameters;
     [SerializeField] private GroundChecker _groundChecker;
     [SerializeField] private Rigidbody _playerRigidbody;
-    [SerializeField] private Transform cameraTransform;
+    [SerializeField] private Transform _cameraTransform;
 
     private Vector3 _startScale;
     private Vector3 _groundAdjustmentVelocity = Vector3.zero;
@@ -110,8 +110,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 _direction = Vector3.zero;
 
-        _direction += Vector3.ProjectOnPlane(cameraTransform.right, transform.up).normalized * horizontalAxis;
-        _direction += Vector3.ProjectOnPlane(cameraTransform.forward, transform.up).normalized * verticalAxis;
+        _direction += Vector3.ProjectOnPlane(_cameraTransform.right, transform.up).normalized * horizontalAxis;
+        _direction += Vector3.ProjectOnPlane(_cameraTransform.forward, transform.up).normalized * verticalAxis;
 
         if (_direction.magnitude > 1f)
             _direction.Normalize();

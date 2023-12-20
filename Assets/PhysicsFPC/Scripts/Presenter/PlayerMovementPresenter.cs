@@ -6,6 +6,7 @@ public class PlayerMovementPresenter : MonoBehaviour
     [SerializeField] private CapsuleCollider _capsuleCollider;
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private GroundChecker _groundChecker;
+    [SerializeField] private CameraHandler _cameraHandler;
     [SerializeField] private Transform _playerTransform;
     [SerializeField] private MouseLook _mouseLook;
 
@@ -14,35 +15,26 @@ public class PlayerMovementPresenter : MonoBehaviour
     private float _horizontalAxisDirection;
     private float _verticalAxisDirection;
 
-    private void LateUpdate() => _mouseLook.UpdateLook();
-
-    private void Awake()
+    private void TryInputCrouch()
     {
-        InitializeCollider();
-        _groundChecker.Initialize(_playerTransform, _capsuleCollider.bounds.center, GetCalculatedRaycastLenght());
-    }
-
-    private void FixedUpdate()
-    {
-        InitializeAxisDirections();
-
         if (Input.GetKey(_movementParameters.CrouchingButtonKey) && _movementParameters.CanCrouch)
             _playerMovement.TryCrouch();
         else
             _playerMovement.TryResetHeight();
+    }
 
-        _playerMovement.TryCalculateAdjustmentVelocity();
-        _playerMovement.TryDeacreaseVerticalSpeed();
-
+    private void TryInputRun()
+    {
         if (Input.GetKey(_movementParameters.RunButtonKey) && _movementParameters.CanRun)
             _playerMovement.TryApplyRunSpeed();
         else
             _playerMovement.TryApplyWalkSpeed();
+    }
 
+    private void TryInputJump()
+    {
         if (Input.GetKey(_movementParameters.JumpButtonKey) && _movementParameters.CanJump)
             _playerMovement.TryJump();
-
-        _playerMovement.ApplyMoveVelocity(_horizontalAxisDirection, _verticalAxisDirection);
     }
 
     private void InitializeAxisDirections()
@@ -81,4 +73,32 @@ public class PlayerMovementPresenter : MonoBehaviour
 
         return length;
     }
+
+    private void Awake()
+    {
+        InitializeCollider();
+        _groundChecker.Initialize(_playerTransform, _capsuleCollider.bounds.center, GetCalculatedRaycastLenght());
+    }
+
+    private void FixedUpdate()
+    {
+        InitializeAxisDirections();
+        TryInputCrouch();
+
+        _playerMovement.TryCalculateAdjustmentVelocity();
+        _playerMovement.TryDeacreaseVerticalSpeed();
+
+        TryInputRun();
+        TryInputJump();
+
+        _playerMovement.ApplyMoveVelocity(_horizontalAxisDirection, _verticalAxisDirection);
+    }
+
+    private void LateUpdate()
+    {
+        _cameraHandler.UpdateInterpolation();
+        _mouseLook.UpdateLook();
+    }
+
+    private void OnEnable() => _cameraHandler.ResetInterpolation();
 }

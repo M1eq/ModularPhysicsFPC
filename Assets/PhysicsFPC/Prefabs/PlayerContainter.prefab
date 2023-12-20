@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8153799217410675883}
+  - component: {fileID: 1081719978}
   m_Layer: 0
   m_Name: PlayerCameraHandler
   m_TagString: Untagged
@@ -31,6 +32,20 @@ Transform:
   m_Father: {fileID: 8153799218734890628}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1081719978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8153799217410675880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a4483ea754ca6043a5118a42cf7f9fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _movementParameters: {fileID: 11400000, guid: 8cf416b851c980242979734458f12be9, type: 2}
+  _playerTransform: {fileID: 8153799218734890628}
 --- !u!1 &8153799217884854847
 GameObject:
   m_ObjectHideFlags: 0
@@ -63,37 +78,6 @@ Transform:
   - {fileID: 8153799218734890628}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8153799218531392434
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8153799218531390541}
-  m_Layer: 0
-  m_Name: GroundChecker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8153799218531390541
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8153799218531392434}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.7, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8153799218734890628}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8153799218734890634
 GameObject:
@@ -129,7 +113,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8153799217410675883}
-  - {fileID: 8153799218531390541}
   m_Father: {fileID: 8153799217884854846}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -160,9 +143,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
-  m_Height: 1.5
+  m_Height: 1
   m_Direction: 1
-  m_Center: {x: 0, y: 1.25, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8153799218734890638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,6 +162,7 @@ MonoBehaviour:
   _capsuleCollider: {fileID: 8153799218734890625}
   _playerMovement: {fileID: 8153799218734890673}
   _groundChecker: {fileID: 8153799218734890639}
+  _cameraHandler: {fileID: 1081719978}
   _playerTransform: {fileID: 8153799218734890628}
   _mouseLook: {fileID: 8153799219060425016}
 --- !u!114 &8153799218734890673
@@ -196,7 +180,7 @@ MonoBehaviour:
   _movementParameters: {fileID: 11400000, guid: 8cf416b851c980242979734458f12be9, type: 2}
   _groundChecker: {fileID: 8153799218734890639}
   _playerRigidbody: {fileID: 8153799218734890629}
-  cameraTransform: {fileID: 8153799219060425017}
+  _cameraTransform: {fileID: 8153799219060425017}
 --- !u!114 &8153799218734890639
 MonoBehaviour:
   m_ObjectHideFlags: 0
