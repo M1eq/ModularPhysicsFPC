@@ -30,10 +30,13 @@ MonoBehaviour:
   _horizontalSensivity: 400
   _upperVerticalRotationBorder: 90
   _lowerVerticalRotationBorder: -90
-  _fieldOfView: 75
+  _movementSmoothSpeed: 20
+  _walkFieldOfView: 90
+  _runFieldOfView: 90
+  _crouchFieldOfView: 90
   _jumpButtonKey: 32
   _runButtonKey: 304
   _crouchingButtonKey: 306
-  _canJump: 1
-  _canRun: 1
-  _canCrouch: 1
+  _jumpAvailable: 1
+  _runAvailable: 1
+  _crouchAvailaible: 1

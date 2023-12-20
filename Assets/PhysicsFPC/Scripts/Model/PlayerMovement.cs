@@ -5,7 +5,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerMovementParameters _movementParameters;
     [SerializeField] private GroundChecker _groundChecker;
     [SerializeField] private Rigidbody _playerRigidbody;
-    [SerializeField] private Transform _cameraTransform;
+    [SerializeField] private MouseLook _mouseLook;
 
     private Vector3 _startScale;
     private Vector3 _groundAdjustmentVelocity = Vector3.zero;
@@ -15,15 +15,20 @@ public class PlayerMovement : MonoBehaviour
     private bool _crouching;
     private bool _grounded;
 
+    private bool CanApplyWalkSpeed => _crouching == false && _currentSpeed != _movementParameters.WalkSpeed;
+    private bool CanApplyRunSpeed => _crouching == false && _currentSpeed != _movementParameters.RunSpeed;
+    private bool CanCrouch => _grounded && transform.localScale.y != _movementParameters.CrouchScaleY;
+    private bool CanJump => _grounded && _crouching == false;
+
     public void TryApplyWalkSpeed()
     {
-        if (_crouching == false && _currentSpeed != _movementParameters.WalkSpeed)
+        if (CanApplyWalkSpeed)
             _currentSpeed = _movementParameters.WalkSpeed;
     }
 
     public void TryApplyRunSpeed()
     {
-        if (_crouching == false && _currentSpeed != _movementParameters.RunSpeed)
+        if (CanApplyRunSpeed)
             _currentSpeed = _movementParameters.RunSpeed;
     }
 
@@ -38,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void TryCrouch()
     {
-        if (_grounded && transform.localScale.y != _movementParameters.CrouchScaleY)
+        if (CanCrouch)
         {
             transform.localScale = new Vector3(transform.localScale.x, _movementParameters.CrouchScaleY, transform.localScale.z);
             _currentSpeed = _movementParameters.CrouchSpeed;
@@ -48,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void TryJump()
     {
-        if (_grounded && _crouching == false)
+        if (CanJump)
         {
             currentVerticalSpeed = _movementParameters.JumpForce;
             _grounded = false;
@@ -110,8 +115,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 _direction = Vector3.zero;
 
-        _direction += Vector3.ProjectOnPlane(_cameraTransform.right, transform.up).normalized * horizontalAxis;
-        _direction += Vector3.ProjectOnPlane(_cameraTransform.forward, transform.up).normalized * verticalAxis;
+        _direction += Vector3.ProjectOnPlane(_mouseLook.transform.right, transform.up).normalized * horizontalAxis;
+        _direction += Vector3.ProjectOnPlane(_mouseLook.transform.forward, transform.up).normalized * verticalAxis;
 
         if (_direction.magnitude > 1f)
             _direction.Normalize();

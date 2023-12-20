@@ -11,9 +11,9 @@ public class PlayerMovementParameters : ScriptableObject
     public float JumpForce => _jumpForce;
     public float RunSpeed => _runSpeed;
     public bool RawInput => _rawInput;
-    public bool CanJump => _canJump;
-    public bool CanRun => _canRun;
-    public bool CanCrouch => _canCrouch;
+    public bool JumpAvailable => _jumpAvailable;
+    public bool RunAvailable => _runAvailable;
+    public bool CrouchAvailable => _crouchAvailaible;
     public float CrouchScaleY => _crouchScaleY;
     public KeyCode JumpButtonKey => _jumpButtonKey;
     public KeyCode RunButtonKey => _runButtonKey;
@@ -54,7 +54,7 @@ public class PlayerMovementParameters : ScriptableObject
     [SerializeField] private KeyCode _runButtonKey = KeyCode.LeftShift;
     [SerializeField] private KeyCode _crouchingButtonKey = KeyCode.LeftControl;
     [Space(5), Header("Настройки опций")]
-    [Space(5), SerializeField] private bool _canJump = true;
-    [SerializeField] private bool _canRun = true;
-    [SerializeField] private bool _canCrouch = true;
+    [Space(5), SerializeField] private bool _jumpAvailable = true;
+    [SerializeField] private bool _runAvailable = true;
+    [SerializeField] private bool _crouchAvailaible = true;
 }

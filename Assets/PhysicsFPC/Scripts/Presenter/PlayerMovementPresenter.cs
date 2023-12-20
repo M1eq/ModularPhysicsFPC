@@ -10,46 +10,7 @@ public class PlayerMovementPresenter : MonoBehaviour
     [SerializeField] private Transform _playerTransform;
     [SerializeField] private MouseLook _mouseLook;
 
-    private const string HorizontalAxis = "Horizontal";
-    private const string VerticalAxis = "Vertical";
-    private float _horizontalAxisDirection;
-    private float _verticalAxisDirection;
-
-    private void TryInputCrouch()
-    {
-        if (Input.GetKey(_movementParameters.CrouchingButtonKey) && _movementParameters.CanCrouch)
-            _playerMovement.TryCrouch();
-        else
-            _playerMovement.TryResetHeight();
-    }
-
-    private void TryInputRun()
-    {
-        if (Input.GetKey(_movementParameters.RunButtonKey) && _movementParameters.CanRun)
-            _playerMovement.TryApplyRunSpeed();
-        else
-            _playerMovement.TryApplyWalkSpeed();
-    }
-
-    private void TryInputJump()
-    {
-        if (Input.GetKey(_movementParameters.JumpButtonKey) && _movementParameters.CanJump)
-            _playerMovement.TryJump();
-    }
-
-    private void InitializeAxisDirections()
-    {
-        if (_movementParameters.RawInput)
-        {
-            _horizontalAxisDirection = Input.GetAxisRaw(HorizontalAxis);
-            _verticalAxisDirection = Input.GetAxisRaw(VerticalAxis);
-        }
-        else
-        {
-            _horizontalAxisDirection = Input.GetAxis(HorizontalAxis);
-            _verticalAxisDirection = Input.GetAxis(VerticalAxis);
-        }
-    }
+    private PlayerMovementInput _playerMovementInput;
 
     private void InitializeCollider()
     {
@@ -74,30 +35,32 @@ public class PlayerMovementPresenter : MonoBehaviour
         return length;
     }
 
-    private void Awake()
-    {
-        InitializeCollider();
-        _groundChecker.Initialize(_playerTransform, _capsuleCollider.bounds.center, GetCalculatedRaycastLenght());
-    }
-
     private void FixedUpdate()
     {
-        InitializeAxisDirections();
-        TryInputCrouch();
+        _playerMovementInput.InitializeAxisDirections();
+        _playerMovementInput.TryInputCrouch();
 
         _playerMovement.TryCalculateAdjustmentVelocity();
         _playerMovement.TryDeacreaseVerticalSpeed();
 
-        TryInputRun();
-        TryInputJump();
+        _playerMovementInput.TryInputRun();
+        _playerMovementInput.TryInputJump();
 
-        _playerMovement.ApplyMoveVelocity(_horizontalAxisDirection, _verticalAxisDirection);
+        _playerMovementInput.InputMove();
     }
 
     private void LateUpdate()
     {
         _cameraHandler.UpdateInterpolation();
         _mouseLook.UpdateLook();
+    }
+
+    private void Awake()
+    {
+        _playerMovementInput = new PlayerMovementInput(_movementParameters, _playerMovement);
+
+        InitializeCollider();
+        _groundChecker.Initialize(_playerTransform, _capsuleCollider.bounds.center, GetCalculatedRaycastLenght());
     }
 
     private void OnEnable() => _cameraHandler.ResetInterpolation();
