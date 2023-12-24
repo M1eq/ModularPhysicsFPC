@@ -25,15 +25,16 @@ MonoBehaviour:
   _rawInput: 0
   _colliderHeight: 2
   _colliderThickness: 1
-  _colliderOffset: {x: 0, y: 0.5, z: 0}
+  _colliderOffset: {x: 0, y: 0, z: 0}
+  _colliderCrouchHeight: 1
+  _colliderCrouchThickness: 1
+  _colliderCrouchOffset: {x: 0, y: -0.3, z: 0}
   _verticalSensivity: 400
   _horizontalSensivity: 400
   _upperVerticalRotationBorder: 90
   _lowerVerticalRotationBorder: -90
-  _movementSmoothSpeed: 20
-  _walkFieldOfView: 90
-  _runFieldOfView: 90
-  _crouchFieldOfView: 90
+  _smoothSpeed: 20
+  _fieldOfView: 70
   _jumpButtonKey: 32
   _runButtonKey: 304
   _crouchingButtonKey: 306

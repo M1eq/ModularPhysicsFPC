@@ -9,6 +9,9 @@ public class CameraHandler : MonoBehaviour
     private Quaternion _currentRotation;
     private Vector3 _localPositionOffset;
 
+    public void ApplyCrouchCameraPosition() => _localPositionOffset = _movementParameters.CrouchCameraPosition;
+    public void ApplyWalkCameraPosition() => _localPositionOffset = _movementParameters.WalkCameraPosition;
+
     public void ResetInterpolation()
     {
         _currentRotation = _playerTransform.rotation;
@@ -43,4 +46,6 @@ public class CameraHandler : MonoBehaviour
         _currentPosition = transform.position;
         _localPositionOffset = transform.localPosition;
     }
+
+    private void OnEnable() => ResetInterpolation();
 }

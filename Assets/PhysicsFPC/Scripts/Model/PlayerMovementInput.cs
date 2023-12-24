@@ -6,19 +6,20 @@ public class PlayerMovementInput
     private const string VerticalAxis = "Vertical";
     private float _horizontalAxisDirection;
     private float _verticalAxisDirection;
-    private PlayerMovement _playerMovement;
-    private PlayerMovementParameters _movementParameters;
+    private readonly PlayerMovement _playerMovement;
+    private readonly PlayerMovementParameters _movementParameters;
+    private readonly PlayerCollider _playerCollider;
 
     private bool CanInputRun => Input.GetKey(_movementParameters.RunButtonKey) && _movementParameters.RunAvailable;
     private bool CanInputJump => Input.GetKey(_movementParameters.JumpButtonKey) && _movementParameters.JumpAvailable;
     private bool CanInputCrouch => Input.GetKey(_movementParameters.CrouchingButtonKey) && _movementParameters.CrouchAvailable;
-
     public void InputMove() => _playerMovement.ApplyMoveVelocity(_horizontalAxisDirection, _verticalAxisDirection);
 
-    public PlayerMovementInput(PlayerMovementParameters movementParameters, PlayerMovement playerMovement)
+    public PlayerMovementInput(PlayerMovementParameters movementParameters, PlayerMovement playerMovement, PlayerCollider playerCollider)
     {
         _movementParameters = movementParameters;
         _playerMovement = playerMovement;
+        _playerCollider = playerCollider;
     }
 
     public void TryInputJump()
@@ -30,9 +31,18 @@ public class PlayerMovementInput
     public void TryInputCrouch()
     {
         if (CanInputCrouch)
-            _playerMovement.TryCrouch();
+        {
+            if (_playerMovement.CanCrouch)
+            {
+                _playerMovement.TryCrouch();
+                _playerCollider.ApplyCrouchParameters();
+            }
+        }
         else
-            _playerMovement.TryResetHeight();
+        {
+            _playerMovement.StopCrouching();
+            _playerCollider.ApplyWalkParameters();
+        }
     }
 
     public void TryInputRun()

@@ -19,12 +19,12 @@ public class GroundChecker : MonoBehaviour
     public bool GetHitDetectionResult() => _hitDetected;
     public float GetHitDistance() => _hitDistance;
 
-    public void Initialize(Transform playerTransform, Vector3 origin, float raycastLenght)
+    public void Initialize(Transform playerTransform, Vector3 origin)
     {
         _playerTransfrom = playerTransform;
         _originPoint = _playerTransfrom.InverseTransformPoint(origin);
 
-        _baseRaycastLenght = raycastLenght * SafetyDistanceFactor;
+        _baseRaycastLenght = GetBaseRaycastLenght();
         _extendedRaycastLenght = _baseRaycastLenght + _movementParameters.ColliderHeight * _movementParameters.StepHeightRatio;
         _raycastLength = _baseRaycastLenght;
     }
@@ -46,5 +46,15 @@ public class GroundChecker : MonoBehaviour
 
         if (_hitDetected)
             _hitDistance = _hit.distance;
+    }
+
+    private float GetBaseRaycastLenght()
+    {
+        float length = 0f;
+
+        length += (_movementParameters.ColliderHeight * (1f - _movementParameters.StepHeightRatio)) * 0.5f;
+        length += _movementParameters.ColliderHeight * _movementParameters.StepHeightRatio;
+
+        return length * SafetyDistanceFactor;
     }
 }

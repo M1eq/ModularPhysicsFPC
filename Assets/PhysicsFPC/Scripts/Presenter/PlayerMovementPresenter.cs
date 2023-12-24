@@ -11,29 +11,7 @@ public class PlayerMovementPresenter : MonoBehaviour
     [SerializeField] private MouseLook _mouseLook;
 
     private PlayerMovementInput _playerMovementInput;
-
-    private void InitializeCollider()
-    {
-        _capsuleCollider.height = _movementParameters.ColliderHeight;
-        _capsuleCollider.center = _movementParameters.ColliderOffset * _movementParameters.ColliderHeight;
-        _capsuleCollider.radius = _movementParameters.ColliderThickness / 2f;
-
-        _capsuleCollider.center += new Vector3(0f, _movementParameters.StepHeightRatio * _capsuleCollider.height / 2f, 0f);
-        _capsuleCollider.height *= (1f - _movementParameters.StepHeightRatio);
-
-        if (_capsuleCollider.height / 2f < _capsuleCollider.radius)
-            _capsuleCollider.radius = _capsuleCollider.height / 2f;
-    }
-
-    private float GetCalculatedRaycastLenght()
-    {
-        float length = 0f;
-
-        length += (_movementParameters.ColliderHeight * (1f - _movementParameters.StepHeightRatio)) * 0.5f;
-        length += _movementParameters.ColliderHeight * _movementParameters.StepHeightRatio;
-
-        return length;
-    }
+    private PlayerCollider _playerCollider;
 
     private void FixedUpdate()
     {
@@ -57,11 +35,10 @@ public class PlayerMovementPresenter : MonoBehaviour
 
     private void Awake()
     {
-        _playerMovementInput = new PlayerMovementInput(_movementParameters, _playerMovement);
+        _playerCollider = new PlayerCollider(_capsuleCollider, _movementParameters, _cameraHandler);
+        _playerMovementInput = new PlayerMovementInput(_movementParameters, _playerMovement, _playerCollider);
 
-        InitializeCollider();
-        _groundChecker.Initialize(_playerTransform, _capsuleCollider.bounds.center, GetCalculatedRaycastLenght());
+        _playerCollider.ApplyWalkParameters();
+        _groundChecker.Initialize(_playerTransform, _capsuleCollider.bounds.center);
     }
-
-    private void OnEnable() => _cameraHandler.ResetInterpolation();
 }

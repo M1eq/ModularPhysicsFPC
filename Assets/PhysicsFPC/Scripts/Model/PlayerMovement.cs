@@ -7,7 +7,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody _playerRigidbody;
     [SerializeField] private MouseLook _mouseLook;
 
-    private Vector3 _startScale;
     private Vector3 _groundAdjustmentVelocity = Vector3.zero;
     private bool _extendedRaycastActivated = true;
     private float currentVerticalSpeed = 0f;
@@ -15,10 +14,12 @@ public class PlayerMovement : MonoBehaviour
     private bool _crouching;
     private bool _grounded;
 
+    public bool CanCrouch => _grounded && _crouching == false;
     private bool CanApplyWalkSpeed => _crouching == false && _currentSpeed != _movementParameters.WalkSpeed;
     private bool CanApplyRunSpeed => _crouching == false && _currentSpeed != _movementParameters.RunSpeed;
-    private bool CanCrouch => _grounded && transform.localScale.y != _movementParameters.CrouchScaleY;
     private bool CanJump => _grounded && _crouching == false;
+
+    public void StopCrouching() => _crouching = false;
 
     public void TryApplyWalkSpeed()
     {
@@ -32,20 +33,10 @@ public class PlayerMovement : MonoBehaviour
             _currentSpeed = _movementParameters.RunSpeed;
     }
 
-    public void TryResetHeight()
-    {
-        if (transform.localScale != _startScale)
-        {
-            transform.localScale = _startScale;
-            _crouching = false;
-        }
-    }
-
     public void TryCrouch()
     {
         if (CanCrouch)
         {
-            transform.localScale = new Vector3(transform.localScale.x, _movementParameters.CrouchScaleY, transform.localScale.z);
             _currentSpeed = _movementParameters.CrouchSpeed;
             _crouching = true;
         }
@@ -123,6 +114,4 @@ public class PlayerMovement : MonoBehaviour
 
         return _direction;
     }
-
-    private void Awake() => _startScale = transform.localScale;
 }
