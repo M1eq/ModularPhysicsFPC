@@ -16,7 +16,6 @@ MonoBehaviour:
   _runSpeed: 10
   _crouchSpeed: 3.5
   _jumpForce: 12
-  _crouchScaleY: 0.75
   _gravityForce: 30
   _stepHeightRatio: 0.25
   _walkableLayer:
@@ -29,11 +28,14 @@ MonoBehaviour:
   _colliderCrouchHeight: 1
   _colliderCrouchThickness: 1
   _colliderCrouchOffset: {x: 0, y: -0.3, z: 0}
+  _roofRaycastLenght: 0.7
   _verticalSensivity: 400
   _horizontalSensivity: 400
   _upperVerticalRotationBorder: 90
   _lowerVerticalRotationBorder: -90
   _smoothSpeed: 20
+  _walkCameraPosition: {x: 0, y: 0.8, z: 0}
+  _crouchCameraPosition: {x: 0, y: 0.3, z: 0}
   _fieldOfView: 70
   _jumpButtonKey: 32
   _runButtonKey: 304

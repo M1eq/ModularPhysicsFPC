@@ -8,10 +8,17 @@ public class PlayerMovementPresenter : MonoBehaviour
     [SerializeField] private GroundChecker _groundChecker;
     [SerializeField] private CameraHandler _cameraHandler;
     [SerializeField] private Transform _playerTransform;
+    [SerializeField] private RoofChecker _roofChecker;
     [SerializeField] private MouseLook _mouseLook;
 
     private PlayerMovementInput _playerMovementInput;
     private PlayerCollider _playerCollider;
+
+    private void LateUpdate()
+    {
+        _cameraHandler.UpdateInterpolation();
+        _mouseLook.UpdateLook();
+    }
 
     private void FixedUpdate()
     {
@@ -23,14 +30,7 @@ public class PlayerMovementPresenter : MonoBehaviour
 
         _playerMovementInput.TryInputRun();
         _playerMovementInput.TryInputJump();
-
         _playerMovementInput.InputMove();
-    }
-
-    private void LateUpdate()
-    {
-        _cameraHandler.UpdateInterpolation();
-        _mouseLook.UpdateLook();
     }
 
     private void Awake()
@@ -40,5 +40,6 @@ public class PlayerMovementPresenter : MonoBehaviour
 
         _playerCollider.ApplyWalkParameters();
         _groundChecker.Initialize(_playerTransform, _capsuleCollider.bounds.center);
+        _roofChecker.Initialize(_playerTransform, _capsuleCollider.bounds.center);
     }
 }

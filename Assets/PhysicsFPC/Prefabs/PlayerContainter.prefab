@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 8153799218734890638}
   - component: {fileID: 8153799218734890673}
   - component: {fileID: 8153799218734890639}
+  - component: {fileID: 1591952071}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -164,6 +165,7 @@ MonoBehaviour:
   _groundChecker: {fileID: 8153799218734890639}
   _cameraHandler: {fileID: 1081719978}
   _playerTransform: {fileID: 8153799218734890628}
+  _roofChecker: {fileID: 1591952071}
   _mouseLook: {fileID: 8153799219060425016}
 --- !u!114 &8153799218734890673
 MonoBehaviour:
@@ -180,6 +182,7 @@ MonoBehaviour:
   _movementParameters: {fileID: 11400000, guid: 8cf416b851c980242979734458f12be9, type: 2}
   _groundChecker: {fileID: 8153799218734890639}
   _playerRigidbody: {fileID: 8153799218734890629}
+  _roofChecker: {fileID: 1591952071}
   _mouseLook: {fileID: 8153799219060425016}
 --- !u!114 &8153799218734890639
 MonoBehaviour:
@@ -191,6 +194,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3ec769a003d82d141a771433fa1102c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _movementParameters: {fileID: 11400000, guid: 8cf416b851c980242979734458f12be9, type: 2}
+--- !u!114 &1591952071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8153799218734890634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d0619eaa57bbc468a9b87700f2d501, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _movementParameters: {fileID: 11400000, guid: 8cf416b851c980242979734458f12be9, type: 2}

@@ -40,8 +40,11 @@ public class PlayerMovementInput
         }
         else
         {
-            _playerMovement.StopCrouching();
-            _playerCollider.ApplyWalkParameters();
+            if (_playerMovement.CanStopCrouch)
+            {
+                _playerMovement.TryStopCrouching();
+                _playerCollider.ApplyWalkParameters();
+            }
         }
     }
 

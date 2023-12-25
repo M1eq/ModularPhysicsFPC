@@ -5,21 +5,28 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerMovementParameters _movementParameters;
     [SerializeField] private GroundChecker _groundChecker;
     [SerializeField] private Rigidbody _playerRigidbody;
+    [SerializeField] private RoofChecker _roofChecker;
     [SerializeField] private MouseLook _mouseLook;
 
     private Vector3 _groundAdjustmentVelocity = Vector3.zero;
     private bool _extendedRaycastActivated = true;
-    private float currentVerticalSpeed = 0f;
+    private float _currentVerticalSpeed = 0f;
+    private bool _movingUnderRoof;
     private float _currentSpeed;
     private bool _crouching;
     private bool _grounded;
 
     public bool CanCrouch => _grounded && _crouching == false;
+    public bool CanStopCrouch => _crouching == true && _movingUnderRoof == false;
     private bool CanApplyWalkSpeed => _crouching == false && _currentSpeed != _movementParameters.WalkSpeed;
     private bool CanApplyRunSpeed => _crouching == false && _currentSpeed != _movementParameters.RunSpeed;
     private bool CanJump => _grounded && _crouching == false;
 
-    public void StopCrouching() => _crouching = false;
+    public void TryStopCrouching()
+    {
+        if (CanStopCrouch)
+            _crouching = false;
+    }
 
     public void TryApplyWalkSpeed()
     {
@@ -46,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (CanJump)
         {
-            currentVerticalSpeed = _movementParameters.JumpForce;
+            _currentVerticalSpeed = _movementParameters.JumpForce;
             _grounded = false;
         }
     }
@@ -57,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 velocity = Vector3.zero;
         velocity += GetCalculatedMovementDirection(horizontalAxis, verticalAxis) * _currentSpeed;
-        velocity += transform.up * currentVerticalSpeed;
+        velocity += transform.up * _currentVerticalSpeed;
 
         _playerRigidbody.velocity = velocity + _groundAdjustmentVelocity;
     }
@@ -66,12 +73,12 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!_grounded)
         {
-            currentVerticalSpeed -= _movementParameters.GravityForce * Time.deltaTime;
+            _currentVerticalSpeed -= _movementParameters.GravityForce * Time.deltaTime;
         }
         else
         {
-            if (currentVerticalSpeed <= 0f)
-                currentVerticalSpeed = 0f;
+            if (_currentVerticalSpeed <= 0f)
+                _currentVerticalSpeed = 0f;
         }
     }
 
@@ -79,8 +86,9 @@ public class PlayerMovement : MonoBehaviour
     {
         _groundAdjustmentVelocity = Vector3.zero;
 
-        ReleaseInitializedRaycast();
+        ReleaseInitializedRaycasts();
         _grounded = _groundChecker.GetHitDetectionResult();
+        _movingUnderRoof = _roofChecker.GetHitDetectionResult();
 
         if (_grounded)
         {
@@ -92,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void ReleaseInitializedRaycast()
+    private void ReleaseInitializedRaycasts()
     {
         if (_extendedRaycastActivated)
             _groundChecker.ApplyExtendedRaycastLenght();
@@ -100,6 +108,7 @@ public class PlayerMovement : MonoBehaviour
             _groundChecker.ApplyBaseRaycastLenght();
 
         _groundChecker.ReleaseRaycast();
+        _roofChecker.ReleaseRaycast();
     }
 
     private Vector3 GetCalculatedMovementDirection(float horizontalAxis, float verticalAxis)

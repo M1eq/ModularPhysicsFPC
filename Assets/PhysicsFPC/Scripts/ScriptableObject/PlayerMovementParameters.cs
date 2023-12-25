@@ -29,25 +29,27 @@ public class PlayerMovementParameters : ScriptableObject
     public float LowerVerticalRotationBorder => _lowerVerticalRotationBorder;
     public float FieldOfView => _fieldOfView;
     public float SmoothSpeed => _smoothSpeed;
+    public float RoofRaycastLenght => _roofRaycastLenght;
     public Vector3 WalkCameraPosition => _walkCameraPosition;
     public Vector3 CrouchCameraPosition => _crouchCameraPosition;
 
     [Header("Настройки передвижения")]
     [Space(5), SerializeField] private float _walkSpeed = 7;
     [SerializeField] private float _runSpeed = 10f;
-    [SerializeField] private float _crouchSpeed = 5f;
+    [SerializeField] private float _crouchSpeed = 3.5f;
     [SerializeField] private float _jumpForce = 12f;
     [SerializeField] private float _gravityForce = 30f;
     [Space(5), SerializeField, Range(0f, 1f)] private float _stepHeightRatio = 0.25f;
     [SerializeField] private LayerMask _walkableLayer = 255;
     [SerializeField] private bool _rawInput = false;
     [Space(5), Header("Настройки коллайдера")]
-    [SerializeField] private float _colliderHeight = 2f;
+    [Space(5), SerializeField] private float _colliderHeight = 2f;
     [SerializeField] private float _colliderThickness = 1f;
     [SerializeField] private Vector3 _colliderOffset = Vector3.zero;
-    [Space(10), SerializeField] private float _colliderCrouchHeight;
+    [Space(10), SerializeField] private float _colliderCrouchHeight = 1f;
     [SerializeField] private float _colliderCrouchThickness = 1f;
-    [SerializeField] private Vector3 _colliderCrouchOffset = Vector3.zero;
+    [SerializeField] private Vector3 _colliderCrouchOffset = new Vector3(0, -0.3f, 0);
+    [Space(5), SerializeField] private float _roofRaycastLenght = 0.7f;
     [Space(5), Header("Настройки камеры")]
     [Space(5), SerializeField] private float _verticalSensivity = 400;
     [SerializeField] private float _horizontalSensivity = 400;
